@@ -64,7 +64,7 @@ namespace BuildBit {
     let initialized = false
     let BBStrip: neopixel.Strip;
 
-    let lineSensorPins = [0, 0, 0, 0];
+    let lineSensorPins = [0, 0, 0, 0, 0];
 
     //===========================================================================
     //  enum
@@ -78,7 +78,9 @@ namespace BuildBit {
         //% block="S3"
         LS3 = 2,
         //% block="S4"
-        LS4 = 3
+        LS4 = 3,
+       //% block="S5"
+        LS4 = 4
     }
 
     export enum enSteppers {
