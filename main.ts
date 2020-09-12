@@ -563,7 +563,7 @@ namespace BuildBit {
 
     //% subcategory=Sensor
     //% blockId=Build-Bit-LineSensor-SetPort
-    //% block="Set LineSensor: S1|%sensor1|S2|%sensor2|S3|%sensor3|S4|%sensor4|S5|%sensor5|"
+    //% block="Set LineSensor: S1|%sensor1| S2|%sensor2| S3|%sensor3| S4|%sensor4| S5|%sensor5|"
     //% weight=77
     //% blockGap=10
     export function SetLSPins(sensor1: DigitalPin, sensor2: DigitalPin, sensor3: DigitalPin, sensor4: DigitalPin, sensor5: DigitalPin): void {
@@ -575,12 +575,12 @@ namespace BuildBit {
 
     //% subcategory=Sensor
     //% blockId=Build-Bit-LineSensor-DetectLine
-    //% block="|%Lsensor| sensor detects line"
+    //% block="|%LineSensorsChoice| sensor detects line"
     //% weight=76
     //% blockGap=10
-    export function LineSensorDetectsLine(Lsensor: LineSensors): boolean {
+    export function LineSensorDetectsLine(LineSensorsChoice:LineSensors): boolean {
 
         //return (pins.digitalReadPin(<DigitalPin>sensor) ? true : false)
-        return (pins.digitalReadPin(<DigitalPin>lineSensorPins[Lsensor]) ? false : true);
+        return (pins.digitalReadPin(<DigitalPin>lineSensorPins[LineSensorsChoice]) ? false : true);
     }
 }
