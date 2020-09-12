@@ -568,13 +568,13 @@ namespace BuildBit {
 
     //% subcategory=Sensor
     //% blockId=Build-Bit-LineSensor-SetPort
-    //% block="Set LineSensor: S1|%sensor1|S2|%sensor2|S3|%sensor3|S4|%sensor4|"
+    //% block="Set LineSensor: S1|%sensor1|S2|%sensor2|S3|%sensor3|S4|%sensor4|S5|%sensor5|"
     //% weight=77
     //% blockGap=10
-    export function SetLSPins(S1: DigitalPin, S2: DigitalPin, S3: DigitalPin, S4: DigitalPin): void {
+    export function SetLSPins(S1: DigitalPin, S2: DigitalPin, S3: DigitalPin, S4: DigitalPin, S5: DigitalPin): void {
 
         // Set Port
-        lineSensorPins = [S1, S2, S3, S4];
+        lineSensorPins = [S1, S2, S3, S4, S5];
 
     }
 
