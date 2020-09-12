@@ -1,4 +1,3 @@
-
 /*===========================================================================
   Pins
     Neopixel            P12
@@ -7,20 +6,16 @@
   I2C 
     SDA                 P20
     SCL                 P19
-
   Motor
     Servo_S1            IIC_Channel 3
     Servo_S2            IIC_Channel 4
     Servo_S3            IIC_Channel 5
-
     Motor_M1            IIC_Channel 8,
     Motor_M2            IIC_Channel 10,
     Motor_M3            IIC_Channel 12,
     Motor_M4            IIC_Channel 14
-
     Stepper_B1          IIC_Channel 8,9,10,11
     Stepper_B2          IIC_Channel 12,13,14,15
-
     Stepper motor suggested Model: 28BYJ-48
 ===========================================================================*/
 
@@ -80,7 +75,7 @@ namespace BuildBit {
         //% block="S4"
         LS4 = 3,
        //% block="S5"
-        LS4 = 4
+        LS5 = 4
     }
 
     export enum enSteppers {
@@ -574,7 +569,7 @@ namespace BuildBit {
     export function SetLSPins(sensor1: DigitalPin, sensor2: DigitalPin, sensor3: DigitalPin, sensor4: DigitalPin, sensor5: DigitalPin): void {
 
         // Set Port
-        lineSensorPins = [S1, S2, S3, S4, S5];
+        lineSensorPins = [sensor1, sensor2, sensor3, sensor4, sensor5];
 
     }
 
@@ -588,5 +583,4 @@ namespace BuildBit {
         //return (pins.digitalReadPin(<DigitalPin>sensor) ? true : false)
         return (pins.digitalReadPin(<DigitalPin>lineSensorPins[Lsensor]) ? false : true);
     }
-
 }
