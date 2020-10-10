@@ -581,6 +581,6 @@ namespace BuildBit {
     export function LineSensorDetectsLine(LineSensorsChoice:LineSensors): boolean {
 
         //return (pins.digitalReadPin(<DigitalPin>sensor) ? true : false)
-        return (pins.digitalReadPin(<DigitalPin>lineSensorPins[LineSensorsChoice]) ? false : true);
+        return (pins.digitalReadPin(<DigitalPin>lineSensorPins[LineSensorsChoice]) ? true : false); // dark mode only
     }
 }
