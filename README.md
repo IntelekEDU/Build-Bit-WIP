@@ -1,6 +1,6 @@
 # IntelekEDU Build:bit
 
-Extension for IntelekEDU Build:Bit V1.0
+Extension for IntelekEDU Build:Bit V1.1
 
 ## License
 
