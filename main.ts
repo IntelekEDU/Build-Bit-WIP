@@ -6,9 +6,6 @@
   I2C 
     SDA                 P20
     SCL                 P19
-
-    MAKER_LINE_PIN      P1
-
   Motor
     Servo_S1            IIC_Channel 3
     Servo_S2            IIC_Channel 4
@@ -21,33 +18,6 @@
     Stepper_B2          IIC_Channel 12,13,14,15
     Stepper motor suggested Model: 28BYJ-48
 ===========================================================================*/
-
-// Default Maker Line pin.
-const MAKER_LINE_PIN = AnalogPin.P1;
-
-// Maker Line position.
-enum LinePosition {
-    //% block="far left"
-    Left2 = 0,
-
-    //% block="left"
-    Left1 = 1,
-
-    //% block="center"
-    Center = 2,
-
-    //% block="right"
-    Right1 = 3,
-
-    //% block="far right"
-    Right2 = 4,
-
-    //% block="all"
-    All = 5,
-
-    //% block="none"
-    None = 6
-}
 
 /**
  * Build:bit blocks
@@ -87,7 +57,7 @@ namespace BuildBit {
     const STP_CHD_H = 1023
 
     let initialized = false
-    //let BBStrip: neopixel.Strip;
+    let BBStrip: neopixel.Strip;
 
     let lineSensorPins = [0, 0, 0, 0, 0];
 
@@ -104,7 +74,7 @@ namespace BuildBit {
         LS3 = 2,
         //% block="S4"
         LS4 = 3,
-        //% block="S5"
+       //% block="S5"
         LS5 = 4
     }
 
@@ -152,6 +122,21 @@ namespace BuildBit {
         M3 = 12,
         M4 = 14
     }
+
+    // export enum enPos2 {
+    //     //% blockId="forward" block="Forward"
+    //     forward = 1,
+    //     //% blockId="reverse" block="Reverse"
+    //     reverse = 2,
+    //     //% blockId="left" block="Turn Left"
+    //     turn_left = 3,
+    //     //% blockId="right" block="Turn Right"
+    //     turn_right = 4,
+    //     //% blockId="rot-left" block="Rotate Left"
+    //     rot_left = 5,
+    //     //% blockId="rot-right" block="Rotate Right"
+    //     rot_right = 6
+    // }
 
     //===========================================================================
     //  I2C
@@ -254,13 +239,13 @@ namespace BuildBit {
 
     /**
      * Neopixel.
-     * @param num of LED, eg: 4
+     * @param num selected speed, eg: 4
      */
     //% subcategory=LED
     //% blockId=Build-Bit-Neopixel-pin
-    //% block="Build:bit Neopixel at pin P12 with %num LEDs as RGB(GRB format)"
+    //% block="Build:bit Neopixel at pin P12 with |%num| LEDs as RGB(GRB format)"
     //% weight=99
-    //% blockGap=8
+    //% blockGap=10
     export function RGB_Program(num: number): neopixel.Strip {
 
         if (!BBStrip) {
@@ -272,16 +257,12 @@ namespace BuildBit {
     //===========================================================================
     //  Motor - DC Motor
     //===========================================================================
-    
-    /**
-      * Motor Stop.
-      */
+
     //% subcategory=Motor
-    //% group="DC Motor"
     //% blockId=Build-Bit-MotorStopAll
     //% block="Motor Stop All"
     //% weight= 87
-    //% blockGap=8
+    //% blockGap=10
     export function MotorStopAll(): void {
         if (!initialized) {
             initPCA9685()
@@ -297,14 +278,13 @@ namespace BuildBit {
     /**
      * Motor move.
      * Speed = 0 - 100
-     * @param Select speed, eg: 30
+     * @param speed selected speed, eg: 30
      */
     //% subcategory=Motor
-    //% group="DC Motor"
     //% blockId=Build-Bit-MotorRun 
-    //% block="Motor %index run %dir at speed %speed"
+    //% block="Motor |%index| run |%dir| at speed |%speed|"
     //% weight=86
-    //% blockGap=8
+    //% blockGap=10
     //% speed.min=0 speed.max=100
     export function MotorRun(index: enMotors, dir: enPos, speed: number): void {
         if (!initialized) {
@@ -353,20 +333,103 @@ namespace BuildBit {
 
     }
 
+    // /**
+    //  * Motor move.
+    //  * Speed = 0 - 100
+    //  * @param speed selected speed, eg: 30
+    //  */
+    // //% subcategory=Motor
+    // //% blockId=Build-Bit-MotorRunDual
+    // //% block="Motor |%index1| and |%index2| run |%dir| at speed |%speed|"
+    // //% weight=85
+    // //% blockGap=10
+    // //% speed.min=0 speed.max=100
+    // //% name.fieldEditor="gridpicker" name.fieldOptions.columns=20
+    // export function MotorRunDual(index1: enMotors, index2: enMotors, dir: enPos, speed: number): void {
+    //     if (!initialized) {
+    //         initPCA9685()
+    //     }
+
+    //     speed = Math.clamp(0, 100, speed)
+    //     speed = Math.abs(4095 * (speed / 100))
+
+    //     if (speed >= 4096) {
+    //         speed = 4095
+    //     }
+    //     if (speed <= 350) {
+    //         speed = 350
+    //     }
+
+    //     let a = index1
+    //     let b = index1 + 1
+    //     let c = index2
+    //     let d = index2 + 1
+
+    //     if (a > 10) {
+    //         if (dir == 1) {
+    //             setPwm(a, 0, speed)
+    //             setPwm(b, 0, 0)
+    //         } else if (dir == 2) {
+    //             setPwm(a, 0, 0)
+    //             setPwm(b, 0, speed)
+    //         }
+    //         else {
+    //             setPwm(a, 0, 0)
+    //             setPwm(b, 0, 0)
+    //         }
+    //     }
+    //     else {
+    //         if (dir == 1) {
+    //             setPwm(b, 0, speed)
+    //             setPwm(a, 0, 0)
+    //         } else if (dir == 2) {
+    //             setPwm(b, 0, 0)
+    //             setPwm(a, 0, speed)
+    //         }
+    //         else {
+    //             setPwm(a, 0, 0)
+    //             setPwm(b, 0, 0)
+    //         }
+    //     }
+
+    //     if (c > 10) {
+    //         if (dir == 1) {
+    //             setPwm(c, 0, speed)
+    //             setPwm(d, 0, 0)
+    //         } else if (dir == 2) {
+    //             setPwm(c, 0, 0)
+    //             setPwm(d, 0, speed)
+    //         }
+    //         else {
+    //             setPwm(c, 0, 0)
+    //             setPwm(d, 0, 0)
+    //         }
+    //     }
+    //     else {
+    //         if (dir == 1) {
+    //             setPwm(d, 0, speed)
+    //             setPwm(c, 0, 0)
+    //         } else if (dir == 2) {
+    //             setPwm(d, 0, 0)
+    //             setPwm(c, 0, speed)
+    //         }
+    //         else {
+    //             setPwm(c, 0, 0)
+    //             setPwm(d, 0, 0)
+    //         }
+    //     }
+    // }
+
+
     //===========================================================================
     //  Motor - Servo
     //===========================================================================
 
-    /**
-     * Control 180 degrees Servo motor
-     * @param Control Servo motor to run from 0 to 180 degrees
-     */
     //% subcategory=Motor
-    //% group="Servo Motor"
     //% blockId=Build-Bit-Servo-180 
-    //% block="Servo(180) %num to value %value|°"
+    //% block="Servo(180) |%num| to value |%value|°"
     //% weight=89
-    //% blockGap=8
+    //% blockGap=10
     //% num.min=1 num.max=8 value.min=0 value.max=180
     export function Servo180(num: enServo, value: number): void {
 
@@ -376,17 +439,12 @@ namespace BuildBit {
         setPwm(num, 0, pwm);
 
     }
-    
-    /**
-     * Control 270 degrees Servo motor
-     * @param Control Servo motor to run from 0 to 270 degrees
-     */
+
     //% subcategory=Motor
-    //% group="Servo Motor"
     //% blockId=Build-Bit-Servo-270 
-    //% block="Servo(270) %num to value %value|°"
+    //% block="Servo(270) |%num| to value |%value|°"
     //% weight=88
-    //% blockGap=8
+    //% blockGap=10
     //% num.min=1 num.max=8 value.min=0 value.max=270
     export function Servo270(num: enServo, value: number): void {
 
@@ -402,18 +460,12 @@ namespace BuildBit {
     //===========================================================================
     //  Motor - Stepper
     //===========================================================================
-    
-    /**
-     * Run Stepper motor to turn in number of degrees
-     * @param Run Stepper motor to turn in number of degrees
-     */
+
     //% subcategory=Motor
-    //% group="Stepper Motor"
     //% blockId=Build-Bit-StepperDegree
-    //% block="Stepper Motor %index turn %degree|°"
-    //% degree.min=0 degree.max=360
+    //% block="Stepper Motor |%index| turn |%degree|°"
     //% weight=84
-    //% blockGap=8
+    //% blockGap=10
     export function StepperDegree(index: enSteppers, degree: number): void {
         if (!initialized) {
             initPCA9685();
@@ -424,33 +476,21 @@ namespace BuildBit {
         MotorStopAll();
     }
 
-    /**
-     * Run Stepper motor to turn in number of circle
-     * @param Run Stepper motor to turn in number of circle
-     */
     //% subcategory=Motor
-    //% group="Stepper Motor"
     //% blockId=Build-Bit-StepperTurn
-    //% block="Stepper Motor %index turn %turn circle"
+    //% block="Stepper Motor |%index| turn |%turn| circle"
     //% weight=83
-    //% blockGap=8
+    //% blockGap=10
     export function StepperTurn(index: enSteppers, turn: enTurns): void {
         let degree = turn;
         StepperDegree(index, degree);
     }
-    
-    /**
-     * Run 2 Stepper Motor to turn in number of degrees
-     * @param Run 2 Stepper motor to turn in number of degrees
-     */
+
     //% subcategory=Motor
-    //% group="Stepper Motor"
     //% blockId=Build-Bit_StepperDual
-    //% block="Dual Stepper Motor B1:%degree1|° and B2:%degree2|°"
-    //% degree1.min=0 degree1.max=360
-    //% degree2.min=0 degree2.max=360
+    //% block="Dual Stepper Motor B1 |%degree1|° and B2 |%degree2|°"
     //% weight=82
-    //% blockGap=8
+    //% blockGap=10
     export function StepperDual(degree1: number, degree2: number): void {
         if (!initialized) {
             initPCA9685();
@@ -480,18 +520,11 @@ namespace BuildBit {
     let tx = 0;
     let rx = 0;
 
-    /**
-        * Set the Ultrasonic Trig and Echo pin
-        * @param Assign the Ultrasonic Trig and Echo pin to Build Bit.
-        */
     //% subcategory=Sensor
-    //% group="Ultrasonic Sensor"
     //% blockId=Build-Bit-Ultrasonic-SetPort
-    //% block="Ultrasonic Trig Port %Trig Echo Port %Echo"
-    //% Trig.fieldEditor="gridpicker" Trig.fieldOptions.columns=6
-    //% Echo.fieldEditor="gridpicker" Echo.fieldOptions.columns=6
+    //% block="Set Ultrasonic Trig Port |%Trig| Echo Port |%Echo|"
     //% weight=79
-    //% blockGap=8
+    //% blockGap=10
     export function SetUltrasonic(Trig: DigitalPin, Echo: DigitalPin): void {
 
         // Set Port
@@ -499,16 +532,11 @@ namespace BuildBit {
         rx = Echo;
     }
 
-    /**
-     * Return the Ultrasonic distance in centimeter(cm)
-     * @param Calculate and return the Ultrasonic value in centimeter(cm)
-     */
     //% subcategory=Sensor
-    //% group="Ultrasonic Sensor"
     //% blockId=Build-Bit-Ultrasonic_read
     //% block="Ultrasonic distance (cm)"
     //% weight=78
-    //% blockGap=8
+    //% blockGap=10
     export function Ultrasonic(): number {
 
         // send pulse
@@ -530,23 +558,12 @@ namespace BuildBit {
     }
 
     //==============================================
-    //  Maker Line V1 - Digital
+    //  Line Sensors
     //==============================================
 
-    /**
-     * Set the Maker Line Digital pin
-     * @param Assign each Maker Line pin to Build Bit.
-     */
     //% subcategory=Sensor
-    //% group="Line Sensor - Digital"
     //% blockId=Build-Bit-LineSensor-SetPort
-    //% block="LineSensor Pin:|S1:%sensor1|S2:%sensor2|S3:%sensor3|S4:%sensor4|S5:%sensor5"
-    //block="i2c write number|at address %address|with value %value|of format %format|repeated %repeat" weight=6
-    //% sensor1.fieldEditor="gridpicker" sensor1.fieldOptions.columns=6
-    //% sensor2.fieldEditor="gridpicker" sensor2.fieldOptions.columns=6
-    //% sensor3.fieldEditor="gridpicker" sensor3.fieldOptions.columns=6
-    //% sensor4.fieldEditor="gridpicker" sensor4.fieldOptions.columns=6
-    //% sensor5.fieldEditor="gridpicker" sensor5.fieldOptions.columns=6
+    //% block="Set LineSensor: S1|%sensor1| S2|%sensor2| S3|%sensor3| S4|%sensor4| S5|%sensor5|"
     //% weight=77
     //% blockGap=10
     export function SetLSPins(sensor1: DigitalPin, sensor2: DigitalPin, sensor3: DigitalPin, sensor4: DigitalPin, sensor5: DigitalPin): void {
@@ -556,110 +573,14 @@ namespace BuildBit {
 
     }
 
-    /**
-     * Return true if Maker Line is on the selected position.
-     * @param position Check if Maker Line is on this position.
-     */
     //% subcategory=Sensor
-    //% group="Line Sensor - Digital"
     //% blockId=Build-Bit-LineSensor-DetectLine
-    //% block="%LineSensorsChoice sensor detects line"
+    //% block="|%LineSensorsChoice| sensor detects line"
     //% weight=76
-    //% blockGap=8
-    export function LineSensorDetectsLine(LineSensorsChoice: LineSensors): boolean {
+    //% blockGap=10
+    export function LineSensorDetectsLine(LineSensorsChoice:LineSensors): boolean {
 
         //return (pins.digitalReadPin(<DigitalPin>sensor) ? true : false)
         return (pins.digitalReadPin(<DigitalPin>lineSensorPins[LineSensorsChoice]) ? true : false); // dark mode only
-    }
-
-    //==============================================
-    //  Maker Line V2 - Analog
-    //==============================================
- 
-    /**
-     * Return true if Maker Line is on the selected position. 
-     * @param position Check if Maker Line is on this position.
-     */
-    //% subcategory=Sensor
-    //% group="Line Sensor - Analog"
-    //% weight=75
-    //% blockGap=8
-    //% blockId=Buildbit_is_line_detected_on
-    //% block="line detected on %position"
-    //% position.fieldEditor="gridpicker" position.fieldOptions.columns=6
-    export function isLineDetectedOn(position: LinePosition): boolean {
-        let analogValue = pins.analogReadPin(MAKER_LINE_PIN);
-
-        switch (position) {
-            case LinePosition.None:
-                if (analogValue < 81) return true;
-                else return false;
-
-            case LinePosition.Left2:
-                if ((analogValue >= 81) && (analogValue < 266)) return true;
-                else return false;
-
-            case LinePosition.Left1:
-                if ((analogValue >= 266) && (analogValue < 430)) return true;
-                else return false;
-
-            case LinePosition.Center:
-                if ((analogValue >= 430) && (analogValue <= 593)) return true;
-                else return false;
-
-            case LinePosition.Right1:
-                if ((analogValue > 593) && (analogValue <= 757)) return true;
-                else return false;
-
-            case LinePosition.Right2:
-                if ((analogValue > 757) && (analogValue <= 941)) return true;
-                else return false;
-
-            case LinePosition.All:
-                if (analogValue > 941) return true;
-                else return false;
-        }
-
-        return false;
-    }
-
-    /**
-     * Return the line position detected by Maker Line (-100 to 100, Negative = Left, 0 = Center, Positive = Right).
-     */
-    //% subcategory=Sensor
-    //% group="Line Sensor - Analog"
-    //% weight=74
-    //% blockGap=8
-    //% blockId=Buildbit_read_line_position
-    //% block="line position"
-    export function readLinePosition(): number {
-        let analogValue = pins.analogReadPin(MAKER_LINE_PIN);
-
-        // Assume line is at center when all or no sensor detects line.
-        if ((analogValue < 81) || (analogValue > 941)) return 512;
-
-        // Scale the sensor value to -100 to 100.
-        let position = (analogValue - 512) / 4;
-        position = limit(position, -100, 100);
-
-        return position;
-    }
-
-    /**
-     * Limit the range of a number.
-     * @param value The number we want to limit.
-     * @param min Minimum value of the number.
-     * @param max Maximum value of the number.
-     */
-    //% blockHidden=true
-    //% blockId=LineSensorValuelimit
-    export function limit(value: number, min: number, max: number): number {
-        if (value < min) {
-            value = min;
-        }
-        else if (value > max) {
-            value = max;
-        }
-        return value;
     }
 }
