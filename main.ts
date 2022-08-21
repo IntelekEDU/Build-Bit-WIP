@@ -96,7 +96,7 @@ namespace BuildBit {
     const STP_CHD_H = 1023
 
     let initialized = false
-    let BBStrip: neopixel.Strip;
+    let bbStrip: neopixel.Strip;
 
     let lineSensorPins = [0, 0, 0, 0, 0];
 
@@ -272,10 +272,10 @@ namespace BuildBit {
     //% blockGap=8
     export function RGB_Program(num: number): neopixel.Strip {
 
-        if (!BBStrip) {
-            BBStrip = neopixel.create(DigitalPin.P12, num, NeoPixelMode.RGB);
+        if (!bbStrip) {
+            bbStrip = neopixel.create(DigitalPin.P12, num, NeoPixelMode.RGB);
         }
-        return BBStrip;
+        return bbStrip;
     }
 
     //===========================================================================
