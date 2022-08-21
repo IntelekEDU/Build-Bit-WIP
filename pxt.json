@@ -1,7 +1,7 @@
 {
-    "name": "BuildBit",
-    "version": "1.1.0",
-    "description": "Extension for IntelekEDU Build:bit V1.1",
+    "name": "BuildBit-WIP",
+    "version": "1.0",
+    "description": "Extension for IntelekEDU Build:bit WIP",
     "license": "MIT",
     "dependencies": {
         "core": "*",
