@@ -270,13 +270,13 @@ namespace BuildBit {
     //% block="Build:bit Neopixel at pin P12 with %num LEDs as RGB(GRB format)"
     //% weight=99
     //% blockGap=8
-    // export function RGB_Program(num: number): neopixel.Strip {
+    export function RGB_Program(num: number): neopixel.Strip {
 
-    //     if (!BBStrip) {
-    //         BBStrip = neopixel.create(DigitalPin.P12, num, NeoPixelMode.RGB);
-    //     }
-    //     return BBStrip;
-    // }
+        if (!BBStrip) {
+            BBStrip = neopixel.create(DigitalPin.P12, num, NeoPixelMode.RGB);
+        }
+        return BBStrip;
+    }
 
     //===========================================================================
     //  Motor - DC Motor
@@ -660,11 +660,11 @@ namespace BuildBit {
                 else return false;
 
             case LinePosition.JL:
-                if ((sPosition <= -40) && (sPosition > -60)) return true;
+                if ((sPosition <= -40) && (sPosition >= -60)) return true;
                 else return false;
 
             case LinePosition.JR:
-                if ((sPosition > 40) && (sPosition <= 60)) return true;
+                if ((sPosition >= 40) && (sPosition <= 60)) return true;
                 else return false;
         }
 
