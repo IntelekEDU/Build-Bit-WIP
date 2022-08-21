@@ -6,7 +6,10 @@
   I2C 
     SDA                 P20
     SCL                 P19
-    MAKER_LINE_PIN      P1
+    
+Maker Line
+    MAKER_LINE_ANA_PIN  P1
+
   Motor
     Servo_S1            IIC_Channel 3
     Servo_S2            IIC_Channel 4
@@ -23,28 +26,36 @@
 // Default Maker Line pin.
 const MAKER_LINE_PIN = AnalogPin.P1;
 
-// Maker Line position.
+// Maker Line Analog position.
 enum LinePosition {
-    //% block="far left"
-    Left2 = 0,
+    
+    //% block="None"
+    None = 0,
+    
+    //% block="Left"
+    Left2 = 1,
 
-    //% block="left"
-    Left1 = 1,
+    //% block="Mid Left"
+    Left1 = 2,
 
-    //% block="center"
-    Center = 2,
+    //% block="Center"
+    Center = 3,
 
-    //% block="right"
-    Right1 = 3,
+    //% block="Mid Right"
+    Right1 = 4,
 
-    //% block="far right"
-    Right2 = 4,
+    //% block="Right"
+    Right2 = 5,
 
-    //% block="all"
-    All = 5,
+    //% block="All"
+    All = 6,
 
-    //% block="none"
-    None = 6
+    //% block="Junction Left"
+    JL = 7,
+
+    //% block="Junction Right"
+    JR = 8
+
 }
 
 /**
@@ -85,7 +96,7 @@ namespace BuildBit {
     const STP_CHD_H = 1023
 
     let initialized = false
-    let BBStrip: neopixel.Strip;
+   let BBStrip: neopixel.Strip;
 
     let lineSensorPins = [0, 0, 0, 0, 0];
 
@@ -270,7 +281,7 @@ namespace BuildBit {
     //===========================================================================
     //  Motor - DC Motor
     //===========================================================================
-    
+
     /**
       * Motor Stop.
       */
@@ -374,7 +385,7 @@ namespace BuildBit {
         setPwm(num, 0, pwm);
 
     }
-    
+
     /**
      * Control 270 degrees Servo motor
      * @param Control Servo motor to run from 0 to 270 degrees
@@ -400,7 +411,7 @@ namespace BuildBit {
     //===========================================================================
     //  Motor - Stepper
     //===========================================================================
-    
+
     /**
      * Run Stepper motor to turn in number of degrees
      * @param Run Stepper motor to turn in number of degrees
@@ -436,7 +447,7 @@ namespace BuildBit {
         let degree = turn;
         StepperDegree(index, degree);
     }
-    
+
     /**
      * Run 2 Stepper Motor to turn in number of degrees
      * @param Run 2 Stepper motor to turn in number of degrees
@@ -573,7 +584,7 @@ namespace BuildBit {
     //==============================================
     //  Maker Line V2 - Analog
     //==============================================
- 
+
     /**
      * Return true if Maker Line is on the selected position. 
      * @param position Check if Maker Line is on this position.
@@ -586,35 +597,74 @@ namespace BuildBit {
     //% block="line detected on %position"
     //% position.fieldEditor="gridpicker" position.fieldOptions.columns=6
     export function isLineDetectedOn(position: LinePosition): boolean {
-        let analogValue = pins.analogReadPin(MAKER_LINE_PIN);
+        // let analogValue = pins.analogReadPin(MAKER_LINE_PIN);
+        let sPosition = readLinePosition();
+
+        // switch (position) {
+        //     case LinePosition.None:
+        //         if (analogValue < 81) return true;
+        //         else return false;
+
+        //     case LinePosition.Left2:
+        //         if ((analogValue >= 81) && (analogValue < 266)) return true;
+        //         else return false;
+
+        //     case LinePosition.Left1:
+        //         if ((analogValue >= 266) && (analogValue < 430)) return true;
+        //         else return false;
+
+        //     case LinePosition.Center:
+        //         if ((analogValue >= 430) && (analogValue <= 593)) return true;
+        //         else return false;
+
+        //     case LinePosition.Right1:
+        //         if ((analogValue > 593) && (analogValue <= 999)) return true;
+        //         else return false;
+
+        //     case LinePosition.Right2:
+        //         if ((analogValue > 757) && (analogValue <= 941)) return true;
+        //         else return false;
+
+        //     case LinePosition.All:
+        //         if (analogValue > 999) return true;
+        //         else return false;
+        // }
 
         switch (position) {
             case LinePosition.None:
-                if (analogValue < 81) return true;
+                if (sPosition <= -90) return true;
                 else return false;
 
             case LinePosition.Left2:
-                if ((analogValue >= 81) && (analogValue < 266)) return true;
+                if ((sPosition <= -50) && (sPosition >= -89)) return true;
                 else return false;
 
             case LinePosition.Left1:
-                if ((analogValue >= 266) && (analogValue < 430)) return true;
+                if ((sPosition <= -11) && (sPosition >= -49)) return true;
                 else return false;
 
             case LinePosition.Center:
-                if ((analogValue >= 430) && (analogValue <= 593)) return true;
+                if ((sPosition <= 10) && (sPosition >= -10)) return true;
                 else return false;
 
             case LinePosition.Right1:
-                if ((analogValue > 593) && (analogValue <= 757)) return true;
+                if ((sPosition >= 11) && (sPosition <= 49)) return true;
                 else return false;
 
             case LinePosition.Right2:
-                if ((analogValue > 757) && (analogValue <= 941)) return true;
+                if ((sPosition >= 50) && (sPosition <= 89)) return true;
                 else return false;
 
             case LinePosition.All:
-                if (analogValue > 941) return true;
+                if (sPosition >= 90) return true;
+                else return false;
+
+            case LinePosition.JL:
+                if ((sPosition <= -40) && (sPosition > -60)) return true;
+                else return false;
+
+            case LinePosition.JR:
+                if ((sPosition > 40) && (sPosition <= 60)) return true;
                 else return false;
         }
 
@@ -633,12 +683,13 @@ namespace BuildBit {
     export function readLinePosition(): number {
         let analogValue = pins.analogReadPin(MAKER_LINE_PIN);
 
-        // Assume line is at center when all or no sensor detects line.
-        if ((analogValue < 81) || (analogValue > 941)) return 512;
+        // // Assume line is at center when all or no sensor detects line.
+        // if ((analogValue < 81) || (analogValue > 941)) return 512;
 
         // Scale the sensor value to -100 to 100.
         let position = (analogValue - 512) / 4;
         position = limit(position, -100, 100);
+        // position = limit(position, 0, 200);
 
         return position;
     }
