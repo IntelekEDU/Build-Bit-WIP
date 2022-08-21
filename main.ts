@@ -96,7 +96,7 @@ namespace BuildBit {
     const STP_CHD_H = 1023
 
     let initialized = false
- //   let BBStrip: neopixel.Strip;
+    let BBStrip: neopixel.Strip;
 
     let lineSensorPins = [0, 0, 0, 0, 0];
 
