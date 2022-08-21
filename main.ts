@@ -96,7 +96,7 @@ namespace BuildBit {
     const STP_CHD_H = 1023
 
     let initialized = false
-   let BBStrip: neopixel.Strip;
+ //   let BBStrip: neopixel.Strip;
 
     let lineSensorPins = [0, 0, 0, 0, 0];
 
@@ -270,13 +270,13 @@ namespace BuildBit {
     //% block="Build:bit Neopixel at pin P12 with %num LEDs as RGB(GRB format)"
     //% weight=99
     //% blockGap=8
-    export function RGB_Program(num: number): neopixel.Strip {
+    // export function RGB_Program(num: number): neopixel.Strip {
 
-        if (!BBStrip) {
-            BBStrip = neopixel.create(DigitalPin.P12, num, NeoPixelMode.RGB);
-        }
-        return BBStrip;
-    }
+    //     if (!BBStrip) {
+    //         BBStrip = neopixel.create(DigitalPin.P12, num, NeoPixelMode.RGB);
+    //     }
+    //     return BBStrip;
+    // }
 
     //===========================================================================
     //  Motor - DC Motor
